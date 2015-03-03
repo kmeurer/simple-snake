@@ -4,6 +4,7 @@
 package game;
 
 import components.*;
+
 import java.awt.*;
 import java.awt.event.*;
 
@@ -20,7 +21,6 @@ public class SnakeGame extends JFrame {
 		scoreboard = new Scoreboard();
 		
 		initGUI();
-//		board.playGame();
 	}
 	
 	void initGUI(){
@@ -36,6 +36,12 @@ public class SnakeGame extends JFrame {
 		setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
 		setSize(500, 500);
 	}
+	/**
+	 * 
+	 */
+	public void startGame(){
+		board.playGame();
+	}
 	
 	public void incrementScore(int inc){
 		scoreboard.incrementScore(inc);
@@ -47,7 +53,7 @@ public class SnakeGame extends JFrame {
 	            public void run() {
 	                SnakeGame game = new SnakeGame();
 	                game.setVisible(true);
-	                
+//	                game.startGame();
 	            }
 	        });
 	}

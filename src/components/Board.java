@@ -4,10 +4,13 @@ import game.*;
 
 import java.awt.BorderLayout;
 import java.awt.Button;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 
 import javax.swing.border.*;
@@ -26,7 +29,9 @@ public class Board extends JPanel {
 	private SnakeGame game;
 	
 	private final int B_WIDTH = 400;
-	private final int B_HEIGHT = 400;
+	private final int B_ROW_COUNT = 25; 	// create n x n board
+	private final int UNIT_WIDTH = (int)B_WIDTH / B_ROW_COUNT;
+	
 	private final int UP_KEY = 38;
 	private final int DOWN_KEY = 40;
 	private final int LEFT_KEY = 37;
@@ -45,9 +50,7 @@ public class Board extends JPanel {
 		while(true){
 			
 			try {
-				snake.move();
-				System.out.println("hola");
-				repaint();
+				
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
@@ -60,10 +63,8 @@ public class Board extends JPanel {
 		
 		setBackground(new java.awt.Color(250, 250, 250));
 		setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
-		Dimension boardSize = new Dimension(B_WIDTH, B_HEIGHT);
+		Dimension boardSize = new Dimension(B_WIDTH, B_WIDTH);
 		setSize(boardSize);
-		setLayout(new GridLayout(20, 20, 0, 0));
-		
 		setVisible(true);
 	}
 	
@@ -109,12 +110,8 @@ public class Board extends JPanel {
 //		racquet.paint(the2DGraphic);
 	}
 	
-	public int getWidth(){
-		return B_WIDTH;
-	}
-	
-	public int getHeight(){
-		return B_HEIGHT;
+	public int getUnitWidth(){
+		return UNIT_WIDTH;
 	}
 	
 	
