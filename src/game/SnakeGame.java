@@ -17,8 +17,12 @@ public class SnakeGame extends JFrame {
 
 	public SnakeGame() {
 		
+		// Add our board and scoreboard to the GUI.  Each handles itself
 		board = new Board(this);
+		add(board, BorderLayout.CENTER);
 		scoreboard = new Scoreboard();
+		
+		add(scoreboard);
 		
 		initGUI();
 	}
@@ -26,11 +30,6 @@ public class SnakeGame extends JFrame {
 	void initGUI(){
 				
 		setBackground( new Color(108, 122, 137) );
-		
-		// Add our board and scoreboard to the GUI.  Each handles itself
-		add(board, BorderLayout.CENTER);
-		add(scoreboard);
-		
 		setResizable(false);  			// User can't change the window's size.
 		setLocation(100,100);
 		setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
@@ -48,13 +47,13 @@ public class SnakeGame extends JFrame {
 	}
 	
 	public static void main(String[] args){
-		 EventQueue.invokeLater(new Runnable() {
-	            @Override
-	            public void run() {
+//		 EventQueue.invokeLater(new Runnable() {
+//	            @Override
+//	            public void run() {
 	                SnakeGame game = new SnakeGame();
 	                game.setVisible(true);
-//	                game.startGame();
-	            }
-	        });
+	                game.board.playGame();
+//	            }
+//	        });
 	}
 }

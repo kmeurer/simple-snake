@@ -24,13 +24,20 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JPanel;
 
+import components.Snake.Direction;
+
 public class Board extends JPanel {
+	private enum UnitTypes {SNAKE, EMPTY, WALL, FOOD};
+	
 	private Snake snake;
 	private SnakeGame game;
 	
 	private final int B_WIDTH = 400;
 	private final int B_ROW_COUNT = 25; 	// create n x n board
+	private final int SNAKE_START_ROW = 10;
+	private final int SNAKE_START_COL = 10;
 	private final int UNIT_WIDTH = (int)B_WIDTH / B_ROW_COUNT;
+	private final UnitTypes[][] positions;
 	
 	private final int UP_KEY = 38;
 	private final int DOWN_KEY = 40;
@@ -40,23 +47,31 @@ public class Board extends JPanel {
 	
 	
 	public Board(SnakeGame thisGame) {
-		game = thisGame;
-		snake = new Snake(this);
+		this.game = thisGame;
+		this.positions = new UnitTypes[B_ROW_COUNT][B_ROW_COUNT];
+		for (int i = 0; i < B_ROW_COUNT; i++){
+			for (int j = 0; j < B_ROW_COUNT; j++){
+				this.positions[i][j] = UnitTypes.EMPTY;
+			}
+		}
+		snake = new Snake(this, SNAKE_START_ROW, SNAKE_START_COL);
+		this.positions[SNAKE_START_ROW][SNAKE_START_COL] = UnitTypes.SNAKE;
+		
 		initListeners();
 		initGUI();
 	}
 	
 	public void playGame(){
 		while(true){
-			
-			try {
-				
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+			      	snake.move();
+	            	repaint();
+	            	try {
+						Thread.sleep(30);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+	    }
 	}
 	
 	public void initGUI(){
@@ -89,6 +104,15 @@ public class Board extends JPanel {
 
 			@Override
 			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == UP_KEY){
+					snake.changeDirection(Direction.UP);
+				} else if (e.getKeyCode() == DOWN_KEY){
+					snake.changeDirection(Direction.DOWN);
+				} else if (e.getKeyCode() == RIGHT_KEY){
+					snake.changeDirection(Direction.RIGHT);
+				} else if (e.getKeyCode() == LEFT_KEY) {
+					snake.changeDirection(Direction.LEFT);
+				}
 			}
 		};
 		addKeyListener(listener);
