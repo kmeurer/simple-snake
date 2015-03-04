@@ -14,6 +14,7 @@ public class SnakeGame extends JFrame {
 	
 	private Board board;
 	private Scoreboard scoreboard;
+	private boolean gameRunning;
 
 	public SnakeGame() {
 		
@@ -39,11 +40,24 @@ public class SnakeGame extends JFrame {
 	 * 
 	 */
 	public void startGame(){
+		gameRunning = true;
 		board.playGame();
 	}
 	
 	public void incrementScore(int inc){
 		scoreboard.incrementScore(inc);
+	}
+	
+	public boolean isRunning(){
+		return gameRunning;
+	}
+	
+	public void gameOver(){
+		String message = "Game Over";
+		gameRunning = false;
+//		JOptionPane.showMessageDialog(this, message, "Game Over", JOptionPane.YES_NO_OPTION);
+		remove(board);
+		//		System.exit(ABORT);
 	}
 	
 	public static void main(String[] args){
@@ -52,7 +66,7 @@ public class SnakeGame extends JFrame {
 //	            public void run() {
 	                SnakeGame game = new SnakeGame();
 	                game.setVisible(true);
-	                game.board.playGame();
+	                game.startGame();
 //	            }
 //	        });
 	}

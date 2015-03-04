@@ -9,37 +9,34 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 
 import javax.swing.border.*;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.LinkedList;
 
 import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.JPanel;
 
 import components.Snake.Direction;
 
 public class Board extends JPanel {
-	private enum UnitTypes {SNAKE, EMPTY, WALL, FOOD};
+	/* PROPERTIES */
+	private enum UnitTypes {SNAKE, EMPTY, WALL, FOOD}; 	// enum used to track where things are on our board
+	private UnitTypes[][] positions;					// matrix used to track position of objects on the board
+	private Snake snake;								// snake used to plot the snake
+	private SnakeGame game;								// game used to link to the game, which manages the scoreboard
+	private LinkedList<int[]> snakePositions;
 	
-	private Snake snake;
-	private SnakeGame game;
-	private UnitTypes[][] positions;
-	
+	/* CONSTANTS */
 	private final int B_WIDTH = 400;
-	private final int B_ROW_COUNT = 25; 	// create n x n board
+	private final int B_ROW_COUNT = 25; 				// create n x n board
 	private final int SNAKE_START_ROW = 10;
 	private final int SNAKE_START_COL = 10;
 	private final int UNIT_WIDTH = (int)B_WIDTH / B_ROW_COUNT;
-	
-	
 	private final int UP_KEY = 38;
 	private final int DOWN_KEY = 40;
 	private final int LEFT_KEY = 37;
@@ -57,15 +54,17 @@ public class Board extends JPanel {
 		}
 		snake = new Snake(this, SNAKE_START_ROW, SNAKE_START_COL);
 		this.positions[SNAKE_START_ROW][SNAKE_START_COL] = UnitTypes.SNAKE;
-		
+		this.snakePositions = new LinkedList<int[]>();
+		snakePositions.addFirst(snake.getHeadIndices());
 		initListeners();
 		initGUI();
 	}
 	
 	public void playGame(){
-		while(true){
-	      	snake.move();
-        	repaint();
+		while(game.isRunning()){
+			moveSnake();
+			repaint();
+        	
         	try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
@@ -113,6 +112,8 @@ public class Board extends JPanel {
 					snake.changeDirection(Direction.RIGHT);
 				} else if (e.getKeyCode() == LEFT_KEY) {
 					snake.changeDirection(Direction.LEFT);
+				} else if (e.getKeyCode() == PAUSE_KEY){
+					// TODO pause game 
 				}
 			}
 		};
@@ -133,6 +134,45 @@ public class Board extends JPanel {
 				RenderingHints.VALUE_ANTIALIAS_ON);
 		snake.paint(the2DGraphic);
 //		racquet.paint(the2DGraphic);
+	}
+	
+	/*
+	 * moveSnake() - moves the snake using the snake's move method and updates board management accordingly
+	 * @params none
+	 * @return none
+	 * 
+	 */
+	public void moveSnake(){
+		// call the snake function to actually make the move
+		snake.move();
+		// update board position data
+		int[] currentHeadPosition = snake.getHeadIndices();									// store the indices of the new head
+		if (validPosition(currentHeadPosition)){
+			snakePositions.addFirst(currentHeadPosition);										// add indices to our snake positions
+			int[] lastPos = snakePositions.removeLast();										// remove the tail from our snake positions
+			this.positions[lastPos[0]][lastPos[1]] = UnitTypes.EMPTY;							// set last position to empty
+			this.positions[currentHeadPosition[0]][currentHeadPosition[1]] = UnitTypes.SNAKE;	// set new head to be a snake
+		} else {
+//			game.gameOver();
+		}
+	}
+	
+	/*
+	 * validPosition() - determines if the indices passed in are a valid position for the snake to move
+	 * @params - a tuple of indices [row, col] that is cross-referenced with locations in our positions array
+	 * @return - a boolean indicating if the position is valid.
+	 */
+	private boolean validPosition(int[] indices){
+		int row = indices[0]; // store row variable for convenience. this is the row index
+		int col = indices[1]; // store col variable for convenience. this is the col index
+		// first test if it is outside of our bounds
+		if ( row < 0 || col < 0 || row > B_ROW_COUNT - 1 || col > B_ROW_COUNT - 1 ){
+			return false;
+		} else if (this.positions[row][col] != UnitTypes.EMPTY || this.positions[row][col] != UnitTypes.FOOD){
+			return false;
+		} else {
+			return true;
+		}
 	}
 	
 	public int getUnitWidth(){

@@ -5,18 +5,26 @@ import java.awt.Rectangle;
 import java.util.LinkedList;
 
 public class Snake {
-
-	public enum Direction {UP, DOWN, LEFT, RIGHT};
-	private Board board;
-	private Direction direction;
-	LinkedList<Rectangle> segments;
-	private int segmentSize;
-	private int[] headIndices;
 	
+	/* PROPERTIES */
+	public enum Direction {UP, DOWN, LEFT, RIGHT}; 	// enum used to mana
+	private Board board;							// board variable to link to main game driver
+	private Direction direction;					// current direction
+	LinkedList<Rectangle> segments;					// rectangle linked list to store snake segments - linked list allows for easy removal of items
+	private int segmentSize;						// size of each segment(serves as both length and width)
+	private int[] headIndices;						// the indices of the current head
+	private int length;								// keep track of the length of our 
+	
+	/* METHODS */
+	/*
+	 * Constructor
+	 * @params - takes a board that the snake will move on, a starting row, and a starting column for hte snake
+	 */
 	public Snake(Board snakeBoard, int startCol, int startRow) {
 		this.board = snakeBoard;						// link to our board
 		this.direction = Direction.DOWN;				// set initial direction to down
 		this.segmentSize = board.getUnitWidth();		// set segment size based on the width of a row/column
+		this.length = 1;
 		
 		// Initialize head indices variable, which tracks which indices our snake head is at
 		headIndices = new int[2];
@@ -66,11 +74,10 @@ public class Snake {
 			newY = (int)segments.get(0).getY();
 			headIndices[0] += 1; // update indices
 		}
-		
-		Rectangle newRect = new Rectangle(newX, newY, segmentSize, segmentSize);
-		segments.addFirst(newRect);
-		segments.removeLast();
-		System.out.println(segments.get(0).getX());
+		// create a new rectangle that will be our new head
+		Rectangle newHead = new Rectangle(newX, newY, segmentSize, segmentSize);
+		segments.addFirst(newHead); // add new head
+		segments.removeLast();		// remove old tail
 	}
 	
 	/*
@@ -83,7 +90,18 @@ public class Snake {
 	}
 	
 	public void changeDirection(Direction newDirection){
-		this.direction = newDirection;
+		// We only allow the user to move in any direction when the length is one.  Otherwise, they cannot move in the opposit direction
+		if (this.length == 1){
+			this.direction = newDirection;
+		} else if (direction == Direction.UP && newDirection != Direction.DOWN){
+			this.direction = newDirection;
+		} else if (direction == Direction.DOWN && newDirection != Direction.UP){
+			this.direction = newDirection;
+		} else if (direction == Direction.LEFT && newDirection != Direction.RIGHT){
+			this.direction = newDirection;
+		} else if (direction == Direction.RIGHT && newDirection != Direction.LEFT){
+			this.direction = newDirection;
+		}
 	}
 
 }
