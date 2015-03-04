@@ -31,13 +31,14 @@ public class Board extends JPanel {
 	
 	private Snake snake;
 	private SnakeGame game;
+	private UnitTypes[][] positions;
 	
 	private final int B_WIDTH = 400;
 	private final int B_ROW_COUNT = 25; 	// create n x n board
 	private final int SNAKE_START_ROW = 10;
 	private final int SNAKE_START_COL = 10;
 	private final int UNIT_WIDTH = (int)B_WIDTH / B_ROW_COUNT;
-	private final UnitTypes[][] positions;
+	
 	
 	private final int UP_KEY = 38;
 	private final int DOWN_KEY = 40;
@@ -63,14 +64,14 @@ public class Board extends JPanel {
 	
 	public void playGame(){
 		while(true){
-			      	snake.move();
-	            	repaint();
-	            	try {
-						Thread.sleep(30);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+	      	snake.move();
+        	repaint();
+        	try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	    }
 	}
 	

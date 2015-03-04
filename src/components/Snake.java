@@ -2,22 +2,29 @@ package components;
 
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class Snake {
 
 	public enum Direction {UP, DOWN, LEFT, RIGHT};
 	private Board board;
 	private Direction direction;
-	ArrayList<Rectangle> segments;
+	LinkedList<Rectangle> segments;
 	private int segmentSize;
-	
+	private int[] headIndices;
 	
 	public Snake(Board snakeBoard, int startCol, int startRow) {
-		this.board = snakeBoard;
-		this.direction = Direction.DOWN;
-		this.segmentSize = board.getUnitWidth();
-		this.segments = new ArrayList<Rectangle>();
+		this.board = snakeBoard;						// link to our board
+		this.direction = Direction.DOWN;				// set initial direction to down
+		this.segmentSize = board.getUnitWidth();		// set segment size based on the width of a row/column
+		
+		// Initialize head indices variable, which tracks which indices our snake head is at
+		headIndices = new int[2];
+		headIndices[0] = startRow;
+		headIndices[1] = startCol;
+		
+		// Initialize our segments linked list and add the snake head to our segments
+		this.segments = new LinkedList<Rectangle>();
 		this.segments.add(new Rectangle(segmentSize * startRow, segmentSize * startCol, segmentSize, segmentSize));
 	}
 	
@@ -27,28 +34,52 @@ public class Snake {
 		}
 	}
 
+	/*
+	 * move() - Moves the snake a single unit based on the direction it is currently moving
+	 * @params none
+	 * @return none
+	 */
 	public void move(){
-		// Create a new rectangle to add to the front.  It's equivalent to the old rectangle, but moved
+		// create a newx and y variable to store our next location
 		int newX;
 		int newY;
+		
+		// Move the snake based on the current direction
 		if ( direction == Direction.UP ){
+			// set new values. only y changes
 			newX = (int)segments.get(0).getX();
-			newY = (int)(segments.get(0).getY() - segmentSize);  
+			newY = (int)(segments.get(0).getY() - segmentSize); 
+			headIndices[1] -= 1;  // update indices
 		} else if ( direction == Direction.DOWN ){
+			// set new values. only y changes
 			newX = (int)segments.get(0).getX();
-			newY = (int)(segments.get(0).getY() + segmentSize);  
+			newY = (int)(segments.get(0).getY() + segmentSize);
+			headIndices[1] += 1;  // update indices
 		} else if ( direction == Direction.LEFT ){
+			// set new values.  only x changes
 			newX = (int)segments.get(0).getX() - segmentSize;
-			newY = (int)segments.get(0).getY();  
-		} else {
+			newY = (int)segments.get(0).getY();
+			headIndices[0] -= 1; // update indices
+		} else { // if we are moving RIGHT
+			// set new values. only x changes
 			newX = (int)segments.get(0).getX() + segmentSize;
-			newY = (int)segments.get(0).getY();  
+			newY = (int)segments.get(0).getY();
+			headIndices[0] += 1; // update indices
 		}
 		
 		Rectangle newRect = new Rectangle(newX, newY, segmentSize, segmentSize);
-		segments.add(0, newRect);
-		segments.remove(segments.size() - 1);
+		segments.addFirst(newRect);
+		segments.removeLast();
 		System.out.println(segments.get(0).getX());
+	}
+	
+	/*
+	 * getHeadIndices() - returns the current indices of the snake's head in the format [rowIdx, colIdx]
+	 * @param none
+	 * @return the indices of the the snake's head
+	 */
+	public int[] getHeadIndices(){
+		return this.headIndices;
 	}
 	
 	public void changeDirection(Direction newDirection){
