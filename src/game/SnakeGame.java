@@ -20,6 +20,9 @@ public class SnakeGame extends JFrame implements Runnable{
 	private boolean gameRunning;
 	private Thread gameRunner;
 
+	private final int FRAME_WIDTH = 750;
+	private final int FRAME_HEIGHT = 505;
+	
 	public SnakeGame() {
 		gameRunning = false; 
 		
@@ -37,7 +40,7 @@ public class SnakeGame extends JFrame implements Runnable{
 		setResizable(false);  			// User can't change the window's size.
 		setLocation(100,100);
 		setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-		setSize(750, 500);
+		setSize(FRAME_WIDTH, FRAME_HEIGHT);
 	}
 	/**
 	 * 

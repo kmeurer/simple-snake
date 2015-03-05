@@ -5,7 +5,6 @@ import game.*;
 import java.awt.BorderLayout;
 import java.awt.Button;
 import java.awt.Component;
-import java.awt.Desktop.Action;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Graphics;
@@ -39,10 +38,10 @@ public class Board extends JPanel {
 	private Food food;
 	
 	/* CONSTANTS */
-	private final int B_WIDTH = 500;
+	private final int B_WIDTH = 480;
 	private final int B_ROW_COUNT = 20; 				// create n x n board
 	private final int SNAKE_START_ROW = 10;
-	private final int SNAKE_START_COL = 10;
+	private final int SNAKE_START_COL = 0;
 	private final int UNIT_WIDTH = (int)B_WIDTH / B_ROW_COUNT;
 	
 	
@@ -108,7 +107,7 @@ public class Board extends JPanel {
 	public void initGUI(){
 		
 		setBackground(new java.awt.Color(250, 250, 250));
-		setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+		setBorder(BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
 		Dimension boardSize = new Dimension(B_WIDTH, B_WIDTH);
 		setSize(boardSize);
 		setMaximumSize(boardSize);
