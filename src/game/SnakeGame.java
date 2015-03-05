@@ -14,22 +14,18 @@ public class SnakeGame extends JFrame {
 	
 	private Board board;
 	private Scoreboard scoreboard;
+	private TitlePage titlePage;
 	private boolean gameRunning;
 
 	public SnakeGame() {
-		
-		// Add our board and scoreboard to the GUI.  Each handles itself
-		board = new Board(this);
-		add(board, BorderLayout.CENTER);
-		scoreboard = new Scoreboard();
-		
-		add(scoreboard);
+		gameRunning = false;
+		// Add our board and 
 		
 		initGUI();
 	}
 	
 	void initGUI(){
-				
+		titlePage = new TitlePage(this);
 		setBackground( new Color(108, 122, 137) );
 		setResizable(false);  			// User can't change the window's size.
 		setLocation(100,100);
@@ -40,7 +36,11 @@ public class SnakeGame extends JFrame {
 	 * 
 	 */
 	public void startGame(){
+		board = new Board(this);
 		gameRunning = true;
+		scoreboard = new Scoreboard(this);
+		add(scoreboard, BorderLayout.CENTER);
+		add(board, BorderLayout.SOUTH);
 		board.playGame();
 	}
 	
@@ -53,11 +53,18 @@ public class SnakeGame extends JFrame {
 	}
 	
 	public void gameOver(){
-		String message = "Game Over";
 		gameRunning = false;
+		SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+            	getContentPane().remove(board);
+            	validate();
+            	repaint();
+            }
+		});
+		
 //		JOptionPane.showMessageDialog(this, message, "Game Over", JOptionPane.YES_NO_OPTION);
-		remove(board);
-		//		System.exit(ABORT);
+		
+//		System.exit(ABORT);
 	}
 	
 	public static void main(String[] args){
