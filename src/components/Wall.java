@@ -1,13 +1,23 @@
 package components;
 
+import java.awt.Color;
+
 public class Wall {
-	int[] coordinates;
+	private int[] coordinates;
+	private Board board;
+	private int wallSize;
+	private final Color wallColor = new Color(0, 0, 0);
 	
-	
-	public Wall(Board board, int col, int row) {
+	/* CONSTRUCTOR */
+	public Wall(Board theBoard, int col, int row) {
+		// set coordinates
 		this.coordinates = new int[2];
 		this.coordinates[0] = col;
 		this.coordinates[1] = row;
+		board = theBoard;
+		wallSize = this.board.getUnitWidth();
 	}
+
+	
 
 }

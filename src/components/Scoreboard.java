@@ -1,6 +1,7 @@
 package components;
 import game.SnakeGame;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -39,7 +40,7 @@ public class Scoreboard extends JPanel {
 		// set a background color
 		setBackground(new java.awt.Color(250, 250, 250));
 		// create a border around it
-		setBorder(BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
+		setBorder(BorderFactory.createLineBorder(new Color(0, 0, 0), 2));
 		// create dimension to store board size
 		Dimension boardSize = new Dimension(scoreboardHeight, scoreboardWidth);
 		setSize(boardSize);

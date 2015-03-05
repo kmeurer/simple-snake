@@ -15,8 +15,6 @@ import java.awt.RenderingHints;
 import javax.swing.border.*;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -36,7 +34,7 @@ public class Board extends JPanel {
 	private SnakeGame game;								// game used to link to the game, which manages the scoreboard
 	private LinkedList<int[]> snakePositions;			// tracks the positions of the snake at any given point in the game
 	private Food food;									// only one food is on the map at any given point
-	private Wall[] walls;								// stores all of the walls on the board
+	private LinkedList<Wall> walls;								// stores all of the walls on the board
 	private boolean includesWalls = false;				// boolean that determines if we will use walls in the current game. default false
 	
 	/* CONSTANTS */
@@ -48,6 +46,7 @@ public class Board extends JPanel {
 	
 	/* CONSTRUCTOR */
 	public Board(SnakeGame thisGame) {
+		this.walls = new LinkedList<Wall>();
 		this.game = thisGame;										// create a link to the game we pass in
 		this.positions = new UnitTypes[B_ROW_COUNT][B_ROW_COUNT];	// initialize positions
 		for (int i = 0; i < B_ROW_COUNT; i++){						// make all positions initially empty
@@ -269,6 +268,7 @@ public class Board extends JPanel {
 		}
 		// create the food
 		Wall newWall = new Wall(this, randCol, randRow);
+		walls.add(newWall);
 		// update positions matrix with food location
 		this.positions[randCol][randRow] = UnitTypes.WALL;
 	}
