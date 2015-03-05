@@ -34,17 +34,19 @@ public class Board extends JPanel {
 	private UnitTypes[][] positions;					// matrix used to track position of objects on the board
 	private Snake snake;								// snake used to plot the snake
 	private SnakeGame game;								// game used to link to the game, which manages the scoreboard
-	private LinkedList<int[]> snakePositions;
-	private Food food;
+	private LinkedList<int[]> snakePositions;			// tracks the positions of the snake at any given point in the game
+	private Food food;									// only one food is on the map at any given point
+	private Wall[] walls;								// stores all of the walls on the board
+	private boolean includesWalls = false;				// boolean that determines if we will use walls in the current game. default false
 	
 	/* CONSTANTS */
-	private final int B_WIDTH = 480;
+	public final int B_WIDTH = 480;
 	private final int B_ROW_COUNT = 20; 				// create n x n board
 	private final int SNAKE_START_ROW = 10;
 	private final int SNAKE_START_COL = 0;
 	private final int UNIT_WIDTH = (int)B_WIDTH / B_ROW_COUNT;
 	
-	
+	/* CONSTRUCTOR */
 	public Board(SnakeGame thisGame) {
 		this.game = thisGame;										// create a link to the game we pass in
 		this.positions = new UnitTypes[B_ROW_COUNT][B_ROW_COUNT];	// initialize positions
@@ -75,7 +77,8 @@ public class Board extends JPanel {
 	 * playGame - Primary game runner.  Cycles through the game while it is running
 	 * @params 
 	 */
-	public void playGame(int speedLvl) {
+	public void playGame(int speedLvl, boolean walls) {
+		includesWalls = walls;
 		System.out.println(Thread.currentThread());
 		this.requestFocusInWindow();
 		while (game.isRunning()){
@@ -101,13 +104,15 @@ public class Board extends JPanel {
 				e.printStackTrace();
 			}
 	    }
-	    game.gameOver();
+	    game.endGame();
 	}
 	
 	public void initGUI(){
-		
+		// set a background color
 		setBackground(new java.awt.Color(250, 250, 250));
+		// create a border around it
 		setBorder(BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
+		// create dimension to store board size
 		Dimension boardSize = new Dimension(B_WIDTH, B_WIDTH);
 		setSize(boardSize);
 		setMaximumSize(boardSize);
@@ -235,11 +240,39 @@ public class Board extends JPanel {
 		// grow the snake's size by 1
 		this.snake.eatFood();
 		// remove the food from the board
+		if (includesWalls){
+			placeWall();
+		}
+		
 		food = null;
 		placeFood();
 		game.incrementScore(1);
 		System.out.println("hello");
 	}
+	
+	
+	/*
+	 * placeWall() - Randomly places a wall on the board
+	 * @params none
+	 * @return none
+	 */
+	public void placeWall() {
+		// create a random number generator to randomly place the food
+		Random rand = new Random();
+		// select a random row and random column in which to place it
+		int randCol = (int)Math.floor(rand.nextDouble() * B_ROW_COUNT);
+		int randRow = (int)Math.floor(rand.nextDouble() * B_ROW_COUNT);
+		
+		while(this.positions[randCol][randRow] != UnitTypes.EMPTY){
+			randCol = (int)Math.floor(rand.nextDouble() * B_ROW_COUNT);
+			randRow = (int)Math.floor(rand.nextDouble() * B_ROW_COUNT);
+		}
+		// create the food
+		Wall newWall = new Wall(this, randCol, randRow);
+		// update positions matrix with food location
+		this.positions[randCol][randRow] = UnitTypes.WALL;
+	}
+	
 	
 	/*
 	 * placeFood() - Randomly places a unit of food on the board

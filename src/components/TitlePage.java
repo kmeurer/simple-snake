@@ -82,29 +82,24 @@ public class TitlePage extends JPanel implements ActionListener {
 		this.add(titlePanel);
 	    this.add(buttonPanel);
 	    this.add(Box.createVerticalGlue());
-	    
-		Dimension boardSize = new Dimension(20, 20);
-		setSize(boardSize);
-		setMaximumSize(boardSize);
-		setVisible(true);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// Determine which button it was that was clicked
     	JButton button = (JButton) e.getSource();
-    	if (button == level2But){
-    		game.changeToBoardView();
-			game.startGame(2);
-    	} else if (button == level1But){
+    	if (button == level1But){
 			game.changeToBoardView();
-			game.startGame(1);
+			game.startGame(1, false);
+    	} else if (button == level2But){
+    		game.changeToBoardView();
+			game.startGame(2, false);
     	} else if (button == level3But){
     		game.changeToBoardView();
-			game.startGame(2);
+			game.startGame(2, true);
     	} else if (button == level4But){
     		game.changeToBoardView();
-			game.startGame(3);
+			game.startGame(3, true);
     	}
     	
 	}

@@ -19,9 +19,14 @@ public class SnakeGame extends JFrame implements Runnable{
 	private GameOver gameOverPage;
 	private boolean gameRunning;
 	private Thread gameRunner;
-
-	private final int FRAME_WIDTH = 750;
-	private final int FRAME_HEIGHT = 505;
+	
+	public final int FRAME_WIDTH = 750;
+	public final int FRAME_HEIGHT = 505;
+	
+	/* PUBLIC SETTINGS */
+	public final String FONT_NAME = "Helvetica";
+	public final int BOARD_WIDTH = 480;
+	public final int BOARD_ROW_COUNT = 20; 				// create n x n board
 	
 	public SnakeGame() {
 		gameRunning = false; 
@@ -58,18 +63,22 @@ public class SnakeGame extends JFrame implements Runnable{
 		}
 		scoreboard = new Scoreboard(this);		// create a new scoreboard to track the game's score
 		board = new Board(this);
-		validate(); // validate and repaint to reflect the removal of old panels
-		repaint();
+		validate(); 	// validate and repaint to reflect the removal of old panels
+		repaint();		// repaint the board
 		add(board);		// add board to the frame
 		add(scoreboard, BorderLayout.EAST);	// add scoreboard to the frame
 	}
 	
-	public void startGame(final int speedLvl){	
-		gameRunning = true;
+	/*
+	 * startGame sets up a new thread to manage the game
+	 */
+	public void startGame(final int speedLvl, final boolean walls){	
+		gameRunning = true;						// the game is now running
+		// here we set up a thread to manage the game
 		gameRunner = new Thread(new Runnable(){
 			@Override
 			public void run(){
-				board.playGame(speedLvl);
+				board.playGame(speedLvl, walls);
 			}
 		});
 		gameRunner.start();
@@ -93,12 +102,17 @@ public class SnakeGame extends JFrame implements Runnable{
 	 * @params none
 	 * @return none
 	 */
-	public void gameOver(){
-		System.out.println("over");
+	public void endGame(){
 		gameRunning = false;
+		final SnakeGame thisGame = this;
 		SwingUtilities.invokeLater(new Runnable() {
             public void run() {
             	getContentPane().remove(board);
+            	getContentPane().remove(scoreboard);
+            	board = null;
+            	gameOverPage = new GameOver(thisGame, scoreboard.getScore());
+            	scoreboard = null;
+            	add(gameOverPage);
             	validate();
             	repaint();
             }
