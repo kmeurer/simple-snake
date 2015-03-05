@@ -5,6 +5,7 @@ import game.*;
 import java.awt.BorderLayout;
 import java.awt.Button;
 import java.awt.Component;
+import java.awt.Desktop.Action;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Graphics;
@@ -14,13 +15,17 @@ import java.awt.RenderingHints;
 
 import javax.swing.border.*;
 
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.LinkedList;
 import java.util.Random;
 
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 
 import components.Snake.Direction;
 
@@ -34,16 +39,11 @@ public class Board extends JPanel {
 	private Food food;
 	
 	/* CONSTANTS */
-	private final int B_WIDTH = 400;
+	private final int B_WIDTH = 500;
 	private final int B_ROW_COUNT = 20; 				// create n x n board
 	private final int SNAKE_START_ROW = 10;
 	private final int SNAKE_START_COL = 10;
 	private final int UNIT_WIDTH = (int)B_WIDTH / B_ROW_COUNT;
-	private final int UP_KEY = 38;
-	private final int DOWN_KEY = 40;
-	private final int LEFT_KEY = 37;
-	private final int RIGHT_KEY = 39;
-	private final int PAUSE_KEY = 32;
 	
 	
 	public Board(SnakeGame thisGame) {
@@ -61,7 +61,7 @@ public class Board extends JPanel {
 		// place the first food on the board
 		placeFood();
 		
-		initListeners();											// initialize key listeners to track the movement of the snake
+		initKeyBindings();											// initialize key listeners to track the movement of the snake
 		initGUI();													// initialize the GUI	
 	}
 	
@@ -73,10 +73,13 @@ public class Board extends JPanel {
 	}
 	
 	/*
-	 * playGame() - Primary game runner.  Cycles through the game while it is running
+	 * playGame - Primary game runner.  Cycles through the game while it is running
+	 * @params 
 	 */
-	public void playGame(){
-		while(game.isRunning()){
+	public void playGame(int speedLvl) {
+		System.out.println(Thread.currentThread());
+		this.requestFocusInWindow();
+		while (game.isRunning()){
 			// move the snake one unit
 			snake.move();
 			// check to make sure position is valid
@@ -86,13 +89,20 @@ public class Board extends JPanel {
 			// repaint the panel
 			repaint();
 	    	try {
-				Thread.sleep(100);
+				if (speedLvl == 1){	
+					Thread.sleep(150);
+				} else if (speedLvl == 2){	
+					Thread.sleep(100);
+				} else if (speedLvl == 3){	
+					Thread.sleep(50);
+				} else {
+					break;
+				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 	    }
 	    game.gameOver();
-		
 	}
 	
 	public void initGUI(){
@@ -101,6 +111,7 @@ public class Board extends JPanel {
 		setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
 		Dimension boardSize = new Dimension(B_WIDTH, B_WIDTH);
 		setSize(boardSize);
+		setMaximumSize(boardSize);
 		setVisible(true);
 	}
 	
@@ -110,40 +121,49 @@ public class Board extends JPanel {
 	 * @return none
 	 * 
 	 */
-	public void initListeners() {
-		KeyListener listener = new KeyListener() {
-			@Override
-			public void keyTyped(KeyEvent e) {
-				
-			}
-			
-			@Override
-			public void keyReleased(KeyEvent e) {
-				
-			}
+	public void initKeyBindings() {
 
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == UP_KEY){
-					snake.changeDirection(Direction.UP);
-				} else if (e.getKeyCode() == DOWN_KEY){
-					snake.changeDirection(Direction.DOWN);
-				} else if (e.getKeyCode() == RIGHT_KEY){
-					snake.changeDirection(Direction.RIGHT);
-				} else if (e.getKeyCode() == LEFT_KEY) {
-					snake.changeDirection(Direction.LEFT);
-				} else if (e.getKeyCode() == PAUSE_KEY){
-					// TODO pause game 
-				}
-			}
+		AbstractAction moveUp = new AbstractAction() {
+		    public void actionPerformed(ActionEvent e) {
+		    	snake.changeDirection(Direction.UP);
+		    }
 		};
-		addKeyListener(listener);
 		
-		// The keyboard can only listen on the focused component.
-		// Here, we set the focus to the JPanel that the keyboard
-		//listening to.
-		setFocusable(true);
-
+		AbstractAction moveDown = new AbstractAction() {
+		    public void actionPerformed(ActionEvent e) {
+		    	snake.changeDirection(Direction.DOWN);
+		    }
+		};
+		
+		AbstractAction moveLeft = new AbstractAction() {
+		    public void actionPerformed(ActionEvent e) {
+		    	snake.changeDirection(Direction.LEFT);
+		    }
+		};
+		
+		AbstractAction moveRight = new AbstractAction() {
+		    public void actionPerformed(ActionEvent e) {
+		    	snake.changeDirection(Direction.RIGHT);
+		    }
+		};
+		
+		getActionMap().put("moveUp", moveUp);
+		getActionMap().put("moveDown", moveDown);
+		getActionMap().put("moveLeft", moveLeft);
+		getActionMap().put("moveRight", moveRight);
+		
+		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("UP"), "moveUp");
+		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("W"), "moveUp");
+		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("w"), "moveUp");
+		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("DOWN"), "moveDown");
+		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("S"), "moveDown");
+		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("s"), "moveDown");
+		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("LEFT"), "moveLeft");
+		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("A"), "moveLeft");
+		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("a"), "moveLeft");
+		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("RIGHT"), "moveRight");
+		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("D"), "moveRight");
+		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("d"), "moveRight");
 	}
 	
 	/*
@@ -166,17 +186,6 @@ public class Board extends JPanel {
 	 * @return none
 	 */
 	public boolean checkHeadPosition(){
-//		for( int i = 0; i < B_ROW_COUNT; i++ ){
-//			for(int j = 0; j< B_ROW_COUNT; j++){
-//				if(this.positions[i][j] == UnitTypes.FOOD){
-//					System.out.println("FOOD!");
-//					System.out.print(i + " ");
-//					System.out.print(j);
-//					
-//				}
-//			}
-//		}
-		
 		// update board position data
 		int[] currentHeadPosition = this.snake.getHeadIndices();					// store the indices of the new head
 		int headCol = currentHeadPosition[0];
