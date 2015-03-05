@@ -1,5 +1,6 @@
 package components;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.util.LinkedList;
@@ -13,7 +14,8 @@ public class Snake {
 	LinkedList<Rectangle> segments;					// rectangle linked list to store snake segments - linked list allows for easy removal of items
 	private int segmentSize;						// size of each segment(serves as both length and width)
 	private int[] headIndices;						// the indices of the current head
-	private int length;								// keep track of the length of our 
+	private int length;								// keep track of the length of our snake
+	private final Color snakeColor = new Color(30, 130, 76);
 	
 	/* METHODS */
 	/*
@@ -37,7 +39,11 @@ public class Snake {
 		System.out.println(startRow);
 	}
 	
+	/*
+	 * paint - paints the snake by filling a rectange for each segment
+	 */
 	public void paint(Graphics2D snakeGraphic) {
+		snakeGraphic.setPaint(snakeColor);
 		for( int i = 0; i < segments.size(); i++ ){
 			snakeGraphic.fillRect((int)segments.get(i).getX(), (int)segments.get(i).getY(), (int)segments.get(i).getWidth(), (int)segments.get(i).getHeight());
 		}

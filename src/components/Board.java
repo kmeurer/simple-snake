@@ -181,6 +181,9 @@ public class Board extends JPanel {
 				RenderingHints.VALUE_ANTIALIAS_ON);
 		snake.paint(the2DGraphic);
 		food.paint(the2DGraphic);
+		for (Wall wall: walls){
+			wall.paint(the2DGraphic);
+		}
 	}
 	
 	/*
@@ -212,7 +215,6 @@ public class Board extends JPanel {
 			}
 			
 			if (newSpotValue == UnitTypes.SNAKE){
-				System.out.println("NO");
 				return false;
 			} else if (newSpotValue == UnitTypes.FOOD){
 				this.positions[lastCoord[0]][lastCoord[1]] = UnitTypes.SNAKE;
@@ -286,12 +288,12 @@ public class Board extends JPanel {
 		int randCol = (int)Math.floor(rand.nextDouble() * B_ROW_COUNT);
 		int randRow = (int)Math.floor(rand.nextDouble() * B_ROW_COUNT);
 		
-		while(this.positions[randCol][randRow] == UnitTypes.SNAKE){
+		while(this.positions[randCol][randRow] == UnitTypes.SNAKE || (this.positions[randCol][randRow] == UnitTypes.WALL)){
 			randCol = (int)Math.floor(rand.nextDouble() * B_ROW_COUNT);
 			randRow = (int)Math.floor(rand.nextDouble() * B_ROW_COUNT);
 		}
 		// create the food
-		this.food = new Food(this, randRow, randCol);
+		this.food = new Food(this, randCol, randRow);
 		// update positions matrix with food location
 		this.positions[randCol][randRow] = UnitTypes.FOOD;
 	}
