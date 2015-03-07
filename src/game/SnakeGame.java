@@ -6,22 +6,20 @@ package game;
 import components.*;
 
 import java.awt.*;
-import java.awt.event.*;
-import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.*;
 
-public class SnakeGame extends JFrame implements Runnable{
+public class SnakeGame extends JFrame {
 	
-	private Board board;
-	private Scoreboard scoreboard;
-	private TitlePage titlePage;
-	private GameOver gameOverPage;
-	private boolean gameRunning;
-	private Thread gameRunner;
+	private Board board;				// used to keep track of the board which manages the game
+	private Scoreboard scoreboard;		// scoreboard panel to display and manage the score
+	private TitlePage titlePage;		// title page. the first instantiated jpanel
+	private GameOver gameOverPage;		// jpanel displayed when game ends	
+	private boolean gameRunning;		// bool that determines whether the game is running
+	private Thread gameRunner;			// thread used to run the game
 	
-	public final int FRAME_WIDTH = 750;
-	public final int FRAME_HEIGHT = 505;
+	public final int FRAME_WIDTH = 700;
+	public final int FRAME_HEIGHT = 503;
 	
 	/* PUBLIC SETTINGS */
 	public final String FONT_NAME = "Helvetica";
@@ -35,13 +33,16 @@ public class SnakeGame extends JFrame implements Runnable{
 	}
 	
 	void initGUI(){
+		
+		setLayout(new BorderLayout());
+		
 		// create a new TitlePage and add it to the GUI. This is initially the only instantiated item
 		titlePage = new TitlePage(this);
 		add(titlePage);
 		
-//		board = new Board(this);			// create a new board that manages the game
 		
-		setBackground( new Color(108, 122, 137) );
+		
+		setBackground( new Color(30, 130, 76) );
 		setResizable(false);  			// User can't change the window's size.
 		setLocation(100,100);
 		setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
@@ -65,8 +66,8 @@ public class SnakeGame extends JFrame implements Runnable{
 		board = new Board(this);
 		validate(); 	// validate and repaint to reflect the removal of old panels
 		repaint();		// repaint the board
-		add(board);		// add board to the frame
-		add(scoreboard, BorderLayout.EAST);	// add scoreboard to the frame
+		this.add(board, BorderLayout.EAST);		// add board to the frame
+		this.add(scoreboard, BorderLayout.EAST);	// add scoreboard to the frame
 	}
 	
 	/*
@@ -103,8 +104,8 @@ public class SnakeGame extends JFrame implements Runnable{
 	 * @return none
 	 */
 	public void endGame(){
-		gameRunning = false;
-		final SnakeGame thisGame = this;
+		gameRunning = false;	// set gameRunning to false
+		final SnakeGame thisGame = this;	// store reference to the current game
 		SwingUtilities.invokeLater(new Runnable() {
             public void run() {
             	getContentPane().remove(board);
@@ -128,11 +129,5 @@ public class SnakeGame extends JFrame implements Runnable{
 	                game.setVisible(true);
 	            }
 	        });
-	}
-
-	@Override
-	public void run() {
-		gameRunner = new Thread();
-		
 	}
 }

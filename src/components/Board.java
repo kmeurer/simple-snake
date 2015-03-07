@@ -78,7 +78,6 @@ public class Board extends JPanel {
 	 */
 	public void playGame(int speedLvl, boolean walls) {
 		includesWalls = walls;
-		System.out.println(Thread.currentThread());
 		this.requestFocusInWindow();
 		while (game.isRunning()){
 			// move the snake one unit
