@@ -1,3 +1,6 @@
+/*
+ * Snake - Manages the information and painting related to our game's snake
+ */
 package components;
 
 import java.awt.Color;
@@ -95,6 +98,9 @@ public class Snake {
 		this.increaseLength();
 	}
 	
+	/*
+	 * getLength() - returns the current length of the snake
+	 */
 	public int getLength() {
 		return this.length;
 	}
@@ -106,7 +112,6 @@ public class Snake {
 		this.length += 1;										// increment our length
 		Rectangle newRect = new Rectangle(segments.peekLast()); // create a new rectangle as a copy of our last rectangle
 		segments.addLast(newRect);								// add our new rectangle to the end of our list
-		System.out.println("added");
 	}
 	
 	/*
@@ -118,6 +123,10 @@ public class Snake {
 		return this.headIndices.clone();
 	}
 	
+	/*
+	 * changeDirection - changes the direction of the snake
+	 * @parms newDirection - the enum type direction for the direction we would like to go
+	 */
 	public void changeDirection(Direction newDirection){
 		// We only allow the user to move in any direction when the length is one.  Otherwise, they cannot move in the opposit direction
 		if (this.length == 1){
@@ -131,6 +140,13 @@ public class Snake {
 		} else if (direction == Direction.RIGHT && newDirection != Direction.LEFT){
 			this.direction = newDirection;
 		}
+	}
+	
+	/*
+	 * getter for direction
+	 */
+	public Direction getDirection(){
+		return direction;
 	}
 
 }

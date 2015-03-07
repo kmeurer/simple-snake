@@ -4,10 +4,11 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 public class Wall {
-	private int[] coordinates;
-	private Board board;
-	private int wallSize;
-	private final Color wallColor = new Color(192, 57, 43);
+	/* PROPERTIES */
+	private int[] coordinates;	// the coordinates of the wall
+	private Board board;		// board it is on	
+	private int wallSize;		// size of the wall
+	private final Color wallColor = new Color(192, 57, 43);	// final color for all walls, set to red
 	
 	/* CONSTRUCTOR */
 	public Wall(Board theBoard, int col, int row) {

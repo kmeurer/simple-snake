@@ -1,3 +1,6 @@
+/*
+ * Food - Manages information related to food placed on our board
+ */
 package components;
 
 import java.awt.Color;
@@ -27,7 +30,8 @@ public class Food {
 	 * @params
 	 */
 	public void paint(Graphics2D foodGraphic) {
-		foodGraphic.setColor(foodColor);
+		foodGraphic.setColor(foodColor); // set the color
+		// fill the oveal
 		foodGraphic.fillOval(location[0] * foodSize, location[1] * foodSize, foodSize, foodSize);
 	}
 

@@ -1,18 +1,15 @@
+/*
+ * Board - Manages the game board and the game progression.  The majority of the game code is in this file
+ */
+
 package components;
 
 import game.*;
 
-import java.awt.BorderLayout;
-import java.awt.Button;
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.RenderingHints;
-
-import javax.swing.border.*;
 
 import java.awt.event.ActionEvent;
 import java.util.LinkedList;
@@ -27,6 +24,7 @@ import javax.swing.KeyStroke;
 import components.Snake.Direction;
 
 public class Board extends JPanel {
+
 	/* PROPERTIES */
 	private enum UnitTypes {SNAKE, EMPTY, WALL, FOOD}; 	// enum used to track where things are on our board
 	private UnitTypes[][] positions;					// matrix used to track position of objects on the board
@@ -40,8 +38,8 @@ public class Board extends JPanel {
 	/* CONSTANTS */
 	public final int B_WIDTH = 480;
 	private final int B_ROW_COUNT = 20; 				// create n x n board
-	private final int SNAKE_START_ROW = 10;
-	private final int SNAKE_START_COL = 0;
+	private final int SNAKE_START_ROW = 10;				// row in which the snake starts
+	private final int SNAKE_START_COL = 0;				// col in which the snake starts
 	private final int UNIT_WIDTH = (int)B_WIDTH / B_ROW_COUNT;
 	
 	/* CONSTRUCTOR */
@@ -65,6 +63,9 @@ public class Board extends JPanel {
 		initGUI();													// initialize the GUI	
 	}
 	
+	/*
+	 * createSnake - initializes our snake in the proper position and adds its positions to our snake positions list
+	 */
 	public void createSnake(){
 		snake = new Snake(this, SNAKE_START_COL, SNAKE_START_ROW);	// place the snake on the map
 		this.positions[SNAKE_START_COL][SNAKE_START_ROW] = UnitTypes.SNAKE; // reflect our placement using our enum
@@ -74,11 +75,11 @@ public class Board extends JPanel {
 	
 	/*
 	 * playGame - Primary game runner.  Cycles through the game while it is running
-	 * @params 
+	 * @params speedLvl - the level of speed we want to move, 3 is highest, walls - boolean indicating if walls will be used in this game
 	 */
 	public void playGame(int speedLvl, boolean walls) {
 		includesWalls = walls;
-		this.requestFocusInWindow();
+		this.requestFocusInWindow();	// sets focus for key listeners
 		while (game.isRunning()){
 			// move the snake one unit
 			snake.move();
@@ -89,6 +90,7 @@ public class Board extends JPanel {
 			// repaint the panel
 			repaint();
 	    	try {
+	    		//
 				if (speedLvl == 1){	
 					Thread.sleep(150);
 				} else if (speedLvl == 2){	
@@ -117,26 +119,27 @@ public class Board extends JPanel {
 		setVisible(true);
 	}
 	
-	/* initListeners - setup keyListeners and add them to the JPanel (the board)
-	 * 
+	/* initKeyBindings - setup keyBindings using abstract actions.  Allows for movement using wasd as well as arrow keys
 	 * @param none
 	 * @return none
 	 * 
 	 */
 	public void initKeyBindings() {
-
+		// abstract action for moving up
 		AbstractAction moveUp = new AbstractAction() {
 		    public void actionPerformed(ActionEvent e) {
 		    	snake.changeDirection(Direction.UP);
 		    }
 		};
 		
+		// abstract action for moving down
 		AbstractAction moveDown = new AbstractAction() {
 		    public void actionPerformed(ActionEvent e) {
 		    	snake.changeDirection(Direction.DOWN);
 		    }
 		};
 		
+		// abstract action for moving left
 		AbstractAction moveLeft = new AbstractAction() {
 		    public void actionPerformed(ActionEvent e) {
 		    	snake.changeDirection(Direction.LEFT);
@@ -149,20 +152,26 @@ public class Board extends JPanel {
 		    }
 		};
 		
+		// add action maps
 		getActionMap().put("moveUp", moveUp);
 		getActionMap().put("moveDown", moveDown);
 		getActionMap().put("moveLeft", moveLeft);
 		getActionMap().put("moveRight", moveRight);
 		
+		//add input maps
+		// up movement
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("UP"), "moveUp");
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("W"), "moveUp");
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("w"), "moveUp");
+		// down movement
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("DOWN"), "moveDown");
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("S"), "moveDown");
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("s"), "moveDown");
+		// left movement
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("LEFT"), "moveLeft");
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("A"), "moveLeft");
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("a"), "moveLeft");
+		// right movement
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("RIGHT"), "moveRight");
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("D"), "moveRight");
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("d"), "moveRight");
@@ -193,17 +202,16 @@ public class Board extends JPanel {
 	public boolean checkHeadPosition(){
 		// update board position data
 		int[] currentHeadPosition = this.snake.getHeadIndices();					// store the indices of the new head
-		int headCol = currentHeadPosition[0];
-		int headRow = currentHeadPosition[1];
+		int headCol = currentHeadPosition[0];	// column of snake head
+		int headRow = currentHeadPosition[1];	// row of snake head
 		
 		
-		int[] lastCoord;
+		int[] lastCoord;	// stores the last coordinate of our snake
 		// if we are still on the board
 		if ( withinBounds(currentHeadPosition) ) { 							// if we are not outside of the matrix...
 			UnitTypes newSpotValue = this.positions[headCol][headRow];
 			snakePositions.addFirst(currentHeadPosition);					// add indices to our snake positions
 			lastCoord = snakePositions.removeLast();						// remove the tail from our snake positions
-			
 			
 			// is the new snake coord on an empty spot?
 			if (newSpotValue == UnitTypes.EMPTY){
@@ -213,17 +221,17 @@ public class Board extends JPanel {
 				return true;
 			}
 			
-			if (newSpotValue == UnitTypes.SNAKE){
+			if (newSpotValue == UnitTypes.SNAKE){	// if snake is on a snake spot, we return false. game over
 				return false;
-			} else if (newSpotValue == UnitTypes.FOOD){
-				this.positions[lastCoord[0]][lastCoord[1]] = UnitTypes.SNAKE;
-				handleFoodCollision();
-				this.positions[headCol][headRow] = UnitTypes.SNAKE;
-				snakePositions.addLast(lastCoord);
+			} else if (newSpotValue == UnitTypes.FOOD){	// if snake is on food, we handle it
+				this.positions[lastCoord[0]][lastCoord[1]] = UnitTypes.SNAKE;	// keep last coord as snake because we're growing in size
+				handleFoodCollision();	// grows the snake
+				this.positions[headCol][headRow] = UnitTypes.SNAKE;	// updates the snake position in our matrix
+				snakePositions.addLast(lastCoord);					// re-add the coord to our snake position
 				return true;
-			} else if (newSpotValue == UnitTypes.WALL){
+			} else if (newSpotValue == UnitTypes.WALL){	// if snake is on a wall, we return false. game over
 				return false;
-			} else {
+			} else {	// if something goes wrong and we get here somehow, end the game
 				return false;
 			}
 		} else {
@@ -241,13 +249,12 @@ public class Board extends JPanel {
 		this.snake.eatFood();
 		// remove the food from the board
 		if (includesWalls){
-			placeWall();
+			placeWall();		// place wall if we are playing with walls on
 		}
 		
-		food = null;
-		placeFood();
-		game.incrementScore(1);
-		System.out.println("hello");
+		food = null;			// set food to null
+		placeFood();			// place new food on the grid
+		game.incrementScore(1); // increment game score
 	}
 	
 	
@@ -286,7 +293,7 @@ public class Board extends JPanel {
 		// select a random row and random column in which to place it
 		int randCol = (int)Math.floor(rand.nextDouble() * B_ROW_COUNT);
 		int randRow = (int)Math.floor(rand.nextDouble() * B_ROW_COUNT);
-		
+		// if we randomly place it on a taken spot, we get a new random number
 		while(this.positions[randCol][randRow] == UnitTypes.SNAKE || (this.positions[randCol][randRow] == UnitTypes.WALL)){
 			randCol = (int)Math.floor(rand.nextDouble() * B_ROW_COUNT);
 			randRow = (int)Math.floor(rand.nextDouble() * B_ROW_COUNT);
@@ -302,10 +309,10 @@ public class Board extends JPanel {
 	 * @params - a tuple of indices [row, col] that is cross-referenced with locations in our positions array
 	 * @return - a boolean indicating if the position is valid.
 	 */
-	private boolean withinBounds(int[] indices){
+	public boolean withinBounds(int[] indices){
 		int row = indices[1]; // store row variable for convenience. this is the row index
 		int col = indices[0]; // store col variable for convenience. this is the col index
-		// first test if it is outside of our bounds
+		// test if it is outside of our bounds
 		if ( row < 0 || col < 0 || row > B_ROW_COUNT - 1 || col > B_ROW_COUNT - 1 ){
 			return false;
 		} else {
@@ -313,6 +320,9 @@ public class Board extends JPanel {
 		}
 	}
 	
+	/*
+	 * getUnitWidth - returns the size of a single cell in our matrix
+	 */
 	public int getUnitWidth(){
 		return UNIT_WIDTH;
 	}

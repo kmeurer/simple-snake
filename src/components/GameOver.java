@@ -1,23 +1,23 @@
+/*
+ * GameOver - Game over screen displayed when the user loses the game.
+ */
+
 package components;
 
 import game.SnakeGame;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 
 public class GameOver extends JPanel implements ActionListener {
 	
@@ -74,7 +74,7 @@ public class GameOver extends JPanel implements ActionListener {
         
         // Create a label for our subtitle, which displays the score and a message asking if the user would like to play again?
         JLabel subtitle = new JLabel();
-        subtitle.setText("<html>"+ scoreMsg + "<br>" + playAgainMsg + "</html>");
+        subtitle.setText("<html><center>"+ scoreMsg + "<br>" + playAgainMsg + "</center></html>");
 	    subtitle.setFont(new Font(game.FONT_NAME, Font.ITALIC, 36));
 	    subtitle.setForeground(Color.white);
 	    titlePanel.add(subtitle);
@@ -94,17 +94,16 @@ public class GameOver extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		// Determine which button it was that was clicked
     	JButton button = (JButton) e.getSource();
+    	// swap into our board view
+    	game.changeToBoardView();
+    	// depending on the level specified, start the game with different settings
     	if (button == level1But){
-			game.changeToBoardView();
 			game.startGame(1, false);
     	} else if (button == level2But){
-    		game.changeToBoardView();
 			game.startGame(2, false);
     	} else if (button == level3But){
-    		game.changeToBoardView();
 			game.startGame(2, true);
     	} else if (button == level4But){
-    		game.changeToBoardView();
 			game.startGame(3, true);
     	}
     	

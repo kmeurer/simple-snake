@@ -1,3 +1,6 @@
+/*
+ * TitlePage: Manages a JPanel as an intro screen for the game.
+ */
 package components;
 
 import game.SnakeGame;
@@ -16,8 +19,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class TitlePage extends JPanel implements ActionListener {
-	
-	private final String TITLE_TEXT = "Snake";
+	/* PROPERTIES */
+	private final String TITLE_TEXT = "Snake!";
 	private final String SUBTITLE_TEXT = "Welcome to Snake.  Use the arrow keys to navigate the snake towards food, but don't hit the walls!  Select a level to begin.";
 	
 	private JButton level1But;
@@ -26,6 +29,7 @@ public class TitlePage extends JPanel implements ActionListener {
 	private JButton level4But;
 	private SnakeGame game;
 	
+	/* CONSTRUCTOR */
 	public TitlePage(SnakeGame theGame) {
 		this.game = theGame;				// store reference to the game
 		// instantiate our buttons
@@ -56,6 +60,7 @@ public class TitlePage extends JPanel implements ActionListener {
 		buttonPanel.setMaximumSize(buttonPanel.getPreferredSize());
         buttonPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
+        // create a panel to hold our title information
 		JPanel titlePanel = new JPanel();
         titlePanel.setLayout(new GridLayout(0, 1, 0, 0));
         titlePanel.setLocation(10, 0);
@@ -68,7 +73,7 @@ public class TitlePage extends JPanel implements ActionListener {
         titlePanel.add(title);
         
         JLabel subtitle = new JLabel();
-        subtitle.setText("<html>"+ SUBTITLE_TEXT +"</html>");
+        subtitle.setText("<html><center>"+ SUBTITLE_TEXT +"</center></html>");
 	    subtitle.setFont(new Font(game.FONT_NAME, Font.ITALIC, 24));
 	    subtitle.setForeground(Color.white);
 	    titlePanel.add(subtitle);
@@ -87,20 +92,18 @@ public class TitlePage extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		// Determine which button it was that was clicked
     	JButton button = (JButton) e.getSource();
+    	// swap into our board view
+    	game.changeToBoardView();
+    	// depending on the level specified, start the game with different settings
     	if (button == level1But){
-			game.changeToBoardView();
 			game.startGame(1, false);
     	} else if (button == level2But){
-    		game.changeToBoardView();
 			game.startGame(2, false);
     	} else if (button == level3But){
-    		game.changeToBoardView();
 			game.startGame(2, true);
     	} else if (button == level4But){
-    		game.changeToBoardView();
 			game.startGame(3, true);
     	}
-    	
 	}
 
 }
